@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Order App</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; text-align: center; margin-top: 50px; }
+        input { padding: 10px; margin: 5px; width: 200px; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background: #45a049; }
+        #response { margin-top: 20px; font-weight: bold; color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Food Order App</h1>
+    <input type="text" id="user" placeholder="Your Name">
+    <input type="text" id="item" placeholder="Food Item">
+    <button onclick="sendOrder()">Order</button>
+    <p id="response"></p>
+
+    <script>
+        function sendOrder() {
+            const user = document.getElementById('user').value;
+            const item = document.getElementById('item').value;
+            
+            if (!user || !item) {
+                alert("Please enter name and food item");
+                return;
+            }
+
+            fetch('http://184.72.86.168:5000/api/order', {  // Public EC2 IP
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user, item})
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('response').innerText = data.message || data.error;
+                document.getElementById('user').value = '';
+                document.getElementById('item').value = '';
+            })
+            .catch(err => console.error(err));
+        }
+    </script>
+</body>
+</html>
